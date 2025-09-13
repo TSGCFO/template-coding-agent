@@ -1,0 +1,7 @@
+{
+    "inlineChat.lineEmptyHint": true,
+    "inlineChat.enableV2": true,
+    "chat.mcp.assisted.nuget.enabled": true,
+    "chat.edits2.enabled": true,
+    "chat.editing.autoAcceptDelay": 20
+}

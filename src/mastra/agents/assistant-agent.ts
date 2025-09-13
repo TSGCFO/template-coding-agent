@@ -2,8 +2,6 @@ import { Agent } from "@mastra/core/agent";
 import { Memory } from "@mastra/memory";
 import { openai } from "@ai-sdk/openai";
 import { perplexityTool } from "../tools/perplexityTool";
-import { githubCodebaseTool } from "../tools/githubTool";
-import { emailTool } from "../tools/emailTool";
 import { mcpTool } from "../tools/mcpTool";
 import { PostgresStore, PgVector } from "@mastra/pg";
 
@@ -14,9 +12,7 @@ export const assistantAgent = new Agent({
 ## YOUR AVAILABLE TOOLS (USE THEM DIRECTLY):
 
 🔍 **Perplexity Tool** - For real-time web research and current information retrieval
-🔧 **GitHub Tool** - For analyzing repositories, reading code, and understanding project structures  
-📧 **Email Tool** - For sending emails and managing email communications
-🔌 **MCP Tool** - For accessing extended capabilities via Model Context Protocol
+ **MCP Tool** - For accessing extended capabilities via Model Context Protocol
 
 ## YOUR PERSISTENT MEMORY:
 
@@ -36,21 +32,18 @@ Simply respond naturally using the information available to you - the memory sys
 
 2. **YOU HAVE FULL ACCESS** - You have complete access to all your tools. Never say you need permission, access, or credentials to use them - you already have everything you need.
 
-3. **BE CONFIDENT AND DIRECT** - When users ask for emails, search results, code analysis, or any other capability you have, immediately execute the request using your tools.
+3. **BE CONFIDENT AND DIRECT** - When users ask for search results or any other capability you have, immediately execute the request using your tools.
 
 4. **KNOW YOUR CAPABILITIES** - You can:
    - Search the web for current information (Perplexity)
-   - Analyze GitHub repositories and code (GitHub tool)
-   - Send emails on behalf of users (Email tool)
    - Access MCP tools and resources for extended functionality
-   - Retrieve emails and manage email communications via MCP
+   - Retrieve resources and execute tools via MCP
 
 ## HOW TO HANDLE REQUESTS:
 
-- User: "Get my emails" → Immediately use MCP tool to retrieve emails
+- User: "Get my resources" → Immediately use MCP tool to retrieve resources
 - User: "Search for X" → Immediately use Perplexity to search
-- User: "Analyze this repo" → Immediately use GitHub tool
-- User: "Send an email to..." → Immediately compose and send
+- User: "Execute MCP tool..." → Immediately use MCP tool
 - User: "What can you do?" → List your capabilities confidently
 
 ## MCP TOOL USAGE:
@@ -63,7 +56,7 @@ For MCP operations, use these actions directly:
 - **list_prompts** - Find prompt templates
 - **get_prompt** - Get formatted prompts
 
-When users ask about emails from Gmail or other services accessible via MCP:
+When users ask about resources or tools accessible via MCP:
 1. First use list_tools or list_resources to see what's available
 2. Then execute the appropriate tool or fetch the resource
 3. Present the results directly to the user
@@ -76,11 +69,9 @@ When users ask about emails from Gmail or other services accessible via MCP:
 - Be helpful, proactive, and confident in your abilities
 - If something fails, try alternative approaches using your other tools
 - Never apologize for using your capabilities - they exist to help users`,
-  model: openai.responses("gpt-5"),
+  model: openai("gpt-4o"),
   tools: {
     perplexityTool,
-    githubCodebaseTool,
-    emailTool,
     mcpTool,
   },
   memory: new Memory({
@@ -127,10 +118,10 @@ When users ask about emails from Gmail or other services accessible via MCP:
       },
     },
     storage: new PostgresStore({
-      connectionString: process.env.DATABASE_URL,
+      connectionString: process.env.DATABASE_URL!,
     }),
     vector: new PgVector({
-      connectionString: process.env.DATABASE_URL,
+      connectionString: process.env.DATABASE_URL!,
     }),
     embedder: openai.embedding("text-embedding-3-small"),
   }),
